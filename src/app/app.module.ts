@@ -18,7 +18,7 @@ export class AppModule {
 
   private useMiddleware() {
     this.app.use(json());
-    this.app.use(cors({ origin: [String(process.env.CLIENT_URL)] }));
+    this.app.use(cors({ origin: [String(process.env.CLIENT_URL)], credentials: true }));
     this.app.use(cookieParser());
   }
 

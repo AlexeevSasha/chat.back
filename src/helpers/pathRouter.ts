@@ -1,7 +1,7 @@
 export const pathRouter = {
   auth: {
-    login: "/login",
-    register: "/register",
+    login: "/signin",
+    register: "/signup",
     logout: "/logout",
     refresh: "/refresh",
   },
