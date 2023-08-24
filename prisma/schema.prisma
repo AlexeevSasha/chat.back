@@ -15,4 +15,15 @@ model User {
   firstname String
   password String
   refresh_token  String?
+  friends         User[] @relation("friends")
+  friendsRelation User[] @relation("friends")
+  invitations_sent FriendInvitation[] @relation("sender")
+  invitations_received FriendInvitation[] @relation("receiver")
+}
+model FriendInvitation {
+  id          String   @id @default(uuid())
+  senderId    String
+  sender      User     @relation("sender", fields: [senderId], references: [id])
+  receiverId  String
+  receiver    User     @relation("receiver", fields: [receiverId], references: [id])
 }

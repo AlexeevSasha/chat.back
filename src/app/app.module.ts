@@ -7,6 +7,7 @@ import { AuthModule } from "../auth/auth.module";
 import { NotFoundError } from "../error/error";
 import http from "http";
 import { SocketModule } from "../socket/socket.module";
+import { FriendModule } from "../friend/friend.module";
 
 export class AppModule {
   port: number;
@@ -28,6 +29,7 @@ export class AppModule {
 
   private useRoutes() {
     this.app.use(`${this.globalPrefix}/auth`, new AuthModule().getRouter());
+    this.app.use(`${this.globalPrefix}/friend`, new FriendModule().getRouter());
     this.app.use("*", () => {
       throw new NotFoundError("Not found");
     });

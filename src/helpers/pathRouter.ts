@@ -5,4 +5,9 @@ export const pathRouter = {
     logout: "/logout",
     refresh: "/refresh",
   },
+  friend: {
+    invite: "/invite",
+    accept: "/accept",
+    reject: "/reject",
+  },
 };
