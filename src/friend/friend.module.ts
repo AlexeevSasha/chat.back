@@ -18,8 +18,9 @@ export class FriendModule {
 
   getRouter() {
     this.routers.route(pathRouter.friend.invite).post(authMiddleware, this.bind(this.friendController.invite));
-    this.routers.route(pathRouter.friend.accept).post(authMiddleware, this.bind(this.friendController.accept));
-    this.routers.route(pathRouter.friend.reject).post(authMiddleware, this.bind(this.friendController.reject));
+    this.routers.route(pathRouter.friend.invite).get(authMiddleware, this.bind(this.friendController.getAllInvite));
+    this.routers.route(pathRouter.friend.accept).get(authMiddleware, this.bind(this.friendController.accept));
+    this.routers.route(pathRouter.friend.reject).get(authMiddleware, this.bind(this.friendController.reject));
     return this.routers;
   }
 }

@@ -1,8 +1,10 @@
 import { PrismaClient, User, FriendInvitation } from "@prisma/client";
 import { BadRequestError, NotFoundError } from "../error/error";
+import { InviteFriend } from "./interfaces/invite.friend";
 
 export class FriendService {
   private prisma;
+
   constructor() {
     this.prisma = new PrismaClient();
   }
@@ -23,10 +25,19 @@ export class FriendService {
     // check if invitation has been already sent
     const invitationAlreadyReceived: FriendInvitation | null = await this.prisma.friendInvitation.findFirst({
       where: {
-        senderId: user.id,
-        receiverId: targetUser.id,
+        OR: [
+          {
+            senderId: user.id,
+            receiverId: targetUser.id,
+          },
+          {
+            senderId: targetUser.id,
+            receiverId: user.id,
+          },
+        ],
       },
     });
+
     if (invitationAlreadyReceived) throw new BadRequestError("Invitation has been already sentf");
 
     await this.prisma.friendInvitation.create({
@@ -59,7 +70,32 @@ export class FriendService {
 
   async reject(inviteId: string, userId: string) {
     const invitation: FriendInvitation | null = await this.prisma.friendInvitation.findFirst({ where: { id: inviteId } });
-    if (invitation) throw new BadRequestError("Error occured. Please try again");
+    if (!invitation) throw new BadRequestError("Error occured. Please try again");
+
     await this.prisma.friendInvitation.delete({ where: { id: inviteId } });
+  }
+
+  async getAllInvite(userId: string) {
+    const inviteUsers = (await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        invitations_received: {
+          select: {
+            id: true,
+            sender: {
+              select: {
+                id: true,
+                email: true,
+                firstname: true,
+                lastname: true,
+                username: true,
+              },
+            },
+          },
+        },
+      },
+    })) as InviteFriend;
+
+    return inviteUsers?.invitations_received || [];
   }
 }

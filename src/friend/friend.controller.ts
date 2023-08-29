@@ -4,6 +4,7 @@ import { FriendDto } from "./dto/friend.dto";
 
 export class FriendController {
   private friendService: FriendService;
+
   constructor() {
     this.friendService = new FriendService();
   }
@@ -33,6 +34,15 @@ export class FriendController {
       new FriendDto().checkId(req.query.id);
       await this.friendService.reject(req.query.id, req.user?.id as string);
       res.status(200).json({ message: "Invitation succesfully rejected" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getAllInvite(req: Request, res: Response, next: NextFunction) {
+    try {
+      const allInvite = await this.friendService.getAllInvite(req.user?.id as string);
+      res.status(200).json(allInvite);
     } catch (error) {
       next(error);
     }
